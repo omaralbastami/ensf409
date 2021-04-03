@@ -1,2 +1,2 @@
-# ensf409
-Final ENSF 409 project
+# ENSF 409 Final Project
+Repository for ENSF 409 final project. Instructions on how to run project to be added later ...
