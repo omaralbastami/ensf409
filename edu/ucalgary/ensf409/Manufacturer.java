@@ -5,28 +5,27 @@ public class Manufacturer {
     private String name;
     private String phone;
     private String province;
-    
 
-    public Manufacturer(String manuID, String name, String phone, String province){
-        this.manuID =  manuID;
+    public Manufacturer(String manuID, String name, String phone, String province) {
+        this.manuID = manuID;
         this.name = name;
         this.phone = phone;
         this.province = province;
     }
 
-    public String getManuID(){
-        return "temp";
+    public String getManuID() {
+        return null;
     }
 
-    public String getName(){
-        return "temp";
+    public String getName() {
+        return null;
     }
 
-    public String getPhone(){
-        return "temp";
+    public String getPhone() {
+        return null;
     }
 
-    public String getProvince(){
-        return "temp";
+    public String getProvince() {
+        return null;
     }
 }
