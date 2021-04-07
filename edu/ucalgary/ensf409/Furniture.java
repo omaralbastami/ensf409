@@ -12,4 +12,24 @@ public abstract class Furniture {
         this.price = price;
         this.manufacturer = manufacturer;
     }
+
+    public String getId() {
+        return this.id;
+    }
+
+    public int getPrice() {
+        return this.price;
+    }
+
+    public String getType() {
+        return this.type;
+    }
+
+    public Manufacturer getManufacturer() {
+        return this.manufacturer;
+    }
+
+    public boolean pieceIsAvailable(char piece) {
+        return piece == 'Y';
+    }
 }

@@ -6,8 +6,8 @@ public class Chair extends Furniture {
     private char seat;
     private char cushion;
 
-    public Chair(char legs, char arms, char seat, char cushion, String id, int price, Manufacturer manufacturer) {
-        super(id, "Chair", price, manufacturer);
+    public Chair(char legs, char arms, char seat, char cushion, String type, String id, int price, Manufacturer manufacturer) {
+        super(id, type, price, manufacturer);
         this.legs = legs;
         this.arms = arms;
         this.seat = seat;

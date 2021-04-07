@@ -5,8 +5,8 @@ public class Filing extends Furniture {
     private char drawers;
     private char cabinet;
 
-    public Filing(char rails, char drawers, char cabinet, String id, int price, Manufacturer manufacturer) {
-        super(id, "Filing", price, manufacturer);
+    public Filing(char rails, char drawers, char cabinet, String type, String id, int price, Manufacturer manufacturer) {
+        super(id, type, price, manufacturer);
         this.rails = rails;
         this.drawers = drawers;
         this.cabinet = cabinet;
