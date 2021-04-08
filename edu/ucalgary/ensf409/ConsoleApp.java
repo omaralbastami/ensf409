@@ -32,14 +32,23 @@ public class ConsoleApp {
             category = category.toUpperCase().trim();
 
             if (isInvalidCategory(category)) {
-                throw new InputException("You must select one of the following: Chair, Lamp, Desk, or Filing");
+                throw new InvalidCategoryException();
             }
 
             System.out.print("Enter furniture type: ");
             String type = input.nextLine();
+            type = type.toUpperCase().trim();
+
+            if (isInvalidType(category, type)) {
+                throw new InvalidTypeException();
+            }
 
             System.out.print("Enter number of items: ");
             int quantity = input.nextInt();
+
+            if (isInvalidQuantity(quantity)) {
+                throw new InvalidQuantityException();
+            }
 
             Furniture[] furniture = getRequestedFurniture(category, type, quantity);
             if (furniture == null || furniture.length == 0) {
@@ -48,14 +57,17 @@ public class ConsoleApp {
             } else {
                 printInvoice(furniture);
             }
-        } catch (InputException e) {
-            System.err.println(e.getMessage());
+        } catch (InvalidCategoryException e) {
+            System.err.println("You must select one of the following: Chair, Lamp, Desk, or Filing");
+        } catch (InvalidTypeException e) {
+            System.err.println("This type is currently unavailable");
+        } catch (InvalidQuantityException e) {
+            System.err.println("Please enter a valid quantity");
         } catch (InputMismatchException e) {
             System.err.println("Please enter a valid number");
         } catch (SQLException e) {
-            System.err.println("An error occurred while reading chair information from database");
-        }
-        catch (Exception e) {
+            System.err.println("An error occurred while reading furniture information from database");
+        } catch (Exception e) {
             System.err.println("Something went wrong, please try again ...");
         } finally {
             input.close();
@@ -127,6 +139,44 @@ public class ConsoleApp {
     private boolean isInvalidCategory(String category) {
         return !category.equals("CHAIR") && !category.equals("DESK") && !category.equals("LAMP")
                 && !category.equals("FILING");
+    }
+
+    /**
+     * Check if the provided type is valid for the given category
+     * 
+     * @param category category of furniture
+     * @param type     type to be checked
+     * @return true if valid type; false otherwise
+     */
+    private boolean isInvalidType(String category, String type) {
+
+        switch (category) {
+        case "CHAIR":
+            return !type.equals("TASK") && !type.equals("MESH") && !type.equals("KNEELING") && !type.equals("EXECUTIVE")
+                    && !type.equals("ERGONOMIC");
+
+        case "DESK":
+            return !type.equals("TRADITIONAL") && !type.equals("ADJUSTABLE") && !type.equals("STANDING");
+
+        case "FILING":
+            return !type.equals("SMALL") && !type.equals("MEDIUM") && !type.equals("LARGE");
+
+        case "LAMP":
+            return !type.equals("STUDY") && !type.equals("SWING ARM") && !type.equals("DESK");
+
+        default:
+            return true;
+        }
+    }
+
+    /**
+     * Check if the provided quantity is valid
+     * 
+     * @param quantity quantity to be checked
+     * @return true if valid quantity; false otherwise
+     */
+    private boolean isInvalidQuantity(int quantity) {
+        return quantity <= 0;
     }
 
     /**

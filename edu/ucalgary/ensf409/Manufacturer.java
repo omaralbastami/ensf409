@@ -14,18 +14,18 @@ public class Manufacturer {
     }
 
     public String getManuID() {
-        return null;
+        return this.manuID;
     }
 
     public String getName() {
-        return null;
+        return this.name;
     }
 
     public String getPhone() {
-        return null;
+        return this.phone;
     }
 
     public String getProvince() {
-        return null;
+        return this.province;
     }
 }
