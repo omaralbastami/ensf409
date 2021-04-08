@@ -70,7 +70,7 @@ public class OrderForm {
     /**
      * closes the order form file and throws an error if it fails
      * 
-     * @param file
+     * @param file //A BufferedWriter type to close
      */
     private void closeOrderForm(BufferedWriter file) {
         if (file != null) {
@@ -91,7 +91,7 @@ public class OrderForm {
      * get's the total price of all the furniture items in the list, and returns it
      * as a String value
      * 
-     * @return
+     * @return //returns the total price as String
      */
     private String getTotalPrice() {
         for (int i = 0; i < this.furnitures.length; i++) {
