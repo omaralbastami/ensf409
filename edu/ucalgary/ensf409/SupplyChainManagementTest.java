@@ -12,8 +12,8 @@ import java.util.*;
 
 public class SupplyChainManagementTest {
         private final String URL = "jdbc:mysql://localhost/inventory";
-        private final String USER = "root";
-        private final String PASSWORD = "walrus";
+        private final String USER = "scm";
+        private final String PASSWORD = "ensf409";
         private final String fileName = "orderform.txt";
 
         @Test
