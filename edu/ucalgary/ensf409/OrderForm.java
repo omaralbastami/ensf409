@@ -1,33 +1,39 @@
 package edu.ucalgary.ensf409;
 
 import java.io.*;
+import edu.ucalgary.ensf409.Exceptions.*;
 
 public class OrderForm {
     private Furniture[] furnitures;
     private String category;
     private int quantity;
-    private int totalPrice;
-    private String fileName = "orderform.txt";
-    private String orderIntro = "Furniture Order Form\n\nFaculty Name:\nContact:\nDate:\n\n";
-    private String originalRequest = "Original Request: ";
-    private String orderClosing = "\nTotal Price: $";
-    private String[] itemsOrdered;
+    private StringBuilder orderFormString;
+    private final String fileName = "orderform.txt";
 
     public OrderForm(Furniture[] furnitures, String category, int quantity) {
         this.furnitures = furnitures;
         this.category = category;
         this.quantity = quantity;
+        this.orderFormString = new StringBuilder();
     }
 
     /**
-     * creates the order form file
+     * Creates the order form file
      */
-    public void createOrderForm() {
-        String temp = this.originalRequest + this.furnitures[0].getType() + " " + category + ", " + quantity
-                + "\n\nItems Ordered\n";
-        this.originalRequest = temp; // completes the original request Line with all the needed components
-        temp = this.orderClosing + getTotalPrice();
-        this.orderClosing = temp; // completes the final line in the order form with the correct price
+    public void createOrderForm() throws OrderFormException {
+        if(this.furnitures == null || this.furnitures.length == 0)
+            return;
+
+        orderFormString.append("Furniture Order Form\n\nFaculty Name:\nContact:\nDate:\n\n")
+                .append("Original Request: " + this.furnitures[0].getType() + " " + category + ", " + quantity + "\n\n")
+                .append("Items Ordered\n");
+
+        for (Furniture furniture : this.furnitures) {
+            orderFormString.append("ID: " + furniture.getId() + "\n");
+        }
+
+        orderFormString.append("\n");
+        orderFormString.append("Total Price: $" + getTotalPrice());
         writeFile();
     }
 
@@ -35,36 +41,20 @@ public class OrderForm {
      * Attempts to write to the file in the orderform.txt format as shown in the
      * project document
      */
-    private void writeFile() {
+    private void writeFile() throws OrderFormException {
         BufferedWriter file = null;
         try {
             file = new BufferedWriter(new FileWriter(this.fileName));
-
-            file.write(orderIntro, 0, orderIntro.length()); // writes the intro to the order form
-
-            file.write(originalRequest, 0, originalRequest.length()); // writes the original request line as well as the
-                                                                      // items ordered line to the order form
-
-            /**
-             * loops through the array of item IDs and writes them in the correct format
-             */
-            getItemIds();
-            for (int i = 0; i < itemsOrdered.length; i++) {
-                file.write("ID: " + itemsOrdered[i] + "\n", 0, 4 + itemsOrdered[i].length());
-                file.newLine();
-            }
-
-            file.write(orderClosing, 0, orderClosing.length()); // writes the last line in the order form
+            file.write(orderFormString.toString(), 0, orderFormString.length()); // writes the intro to the order form
         }
 
         catch (Exception e) {
-            System.err.println("I/O error opening/writing file.");
-            System.err.println(e.getMessage());
-            closeOrderForm(file);
-            System.exit(1);
+            throw new OrderFormException();
         }
 
-        closeOrderForm(file); // closes the order form
+        finally {
+            closeOrderForm(file); // closes the order form
+        }
     }
 
     /**
@@ -72,41 +62,29 @@ public class OrderForm {
      * 
      * @param file A BufferedWriter type to close
      */
-    private void closeOrderForm(BufferedWriter file) {
+    private void closeOrderForm(BufferedWriter file) throws OrderFormException {
         if (file != null) {
             try {
                 file.close();
             }
 
             catch (Exception e) {
-                System.err.println("I/O error closing output file " + this.fileName + ".");
-                System.err.println(e.toString());
-                System.exit(1);
+                throw new OrderFormException();
             }
 
         }
     }
 
     /**
-     * get's the total price of all the furniture items in the list, and returns it
-     * as a String value
+     * Gets the total price of all the furniture items in the list
      * 
-     * @return returns the total price as String
+     * @return returns the total price
      */
-    private String getTotalPrice() {
+    private int getTotalPrice() {
+        int price = 0;
         for (int i = 0; i < this.furnitures.length; i++) {
-            this.totalPrice += this.furnitures[i].getPrice();
+            price += this.furnitures[i].getPrice();
         }
-        return "" + this.totalPrice;
-    }
-
-    /**
-     * fills our String array called itemsOrdered with their corresponding item IDs
-     */
-    private void getItemIds() {
-        this.itemsOrdered = new String[furnitures.length];
-        for (int i = 0; i < this.furnitures.length; i++) {
-            this.itemsOrdered[i] = furnitures[i].getId();
-        }
+        return price;
     }
 }

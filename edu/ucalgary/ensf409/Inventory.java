@@ -3,6 +3,8 @@ package edu.ucalgary.ensf409;
 import java.sql.*;
 import java.util.*;
 
+import edu.ucalgary.ensf409.Exceptions.OrderFormException;
+
 /**
  * The Inventory is responsible for interfacing with the MySQL database to
  * retrieve relevant inventory information
@@ -49,6 +51,7 @@ public class Inventory {
                 int price = queryResults.getInt("Price");
                 String manuID = queryResults.getString("ManuID");
                 Manufacturer manufacturer = getManufacturer(manuID);
+                type = queryResults.getString("Type");
 
                 Chair chair = new Chair(legs, arms, seat, cushion, type, id, price, manufacturer);
                 result.add(chair);
@@ -83,6 +86,7 @@ public class Inventory {
                 int price = queryResults.getInt("Price");
                 String manuID = queryResults.getString("ManuID");
                 Manufacturer manufacturer = getManufacturer(manuID);
+                type = queryResults.getString("Type");
 
                 Desk desk = new Desk(legs, top, drawer, type, id, price, manufacturer);
                 result.add(desk);
@@ -116,6 +120,7 @@ public class Inventory {
                 int price = queryResults.getInt("Price");
                 String manuID = queryResults.getString("ManuID");
                 Manufacturer manufacturer = getManufacturer(manuID);
+                type = queryResults.getString("Type");
 
                 Lamp lamp = new Lamp(base, bulb, type, id, price, manufacturer);
                 result.add(lamp);
@@ -150,6 +155,7 @@ public class Inventory {
                 int price = queryResults.getInt("Price");
                 String manuID = queryResults.getString("ManuID");
                 Manufacturer manufacturer = getManufacturer(manuID);
+                type = queryResults.getString("Type");
 
                 Filing filing = new Filing(rails, drawers, cabinet, type, id, price, manufacturer);
                 result.add(filing);
@@ -275,7 +281,7 @@ public class Inventory {
      * @return chairs that produce the cheapest combination. Empty array if cannot
      *         be produced
      */
-    public Chair[] getCheapestCombination(Chair[] chairs, int quantity) throws SQLException {
+    public Chair[] getCheapestCombination(Chair[] chairs, int quantity) throws SQLException, OrderFormException {
         if (chairs.length < quantity) {
             return new Chair[0];
         }
@@ -295,6 +301,8 @@ public class Inventory {
             deleteFurniture(chair.getId(), "CHAIR");
         }
 
+        createFurnitureOrder(cheapest, quantity, "Chair");
+
         return cheapest;
     }
 
@@ -306,7 +314,7 @@ public class Inventory {
      * @return desks that produce the cheapest combination. Empty if cannot be
      *         produced
      */
-    public Desk[] getCheapestCombination(Desk[] desks, int quantity) throws SQLException {
+    public Desk[] getCheapestCombination(Desk[] desks, int quantity) throws SQLException, OrderFormException {
         if (desks.length < quantity) {
             return new Desk[0];
         }
@@ -326,6 +334,8 @@ public class Inventory {
             deleteFurniture(desk.getId(), "DESK");
         }
 
+        createFurnitureOrder(cheapest, quantity, "Desk");
+
         return cheapest;
     }
 
@@ -336,7 +346,7 @@ public class Inventory {
      * @param quantity number of lamps needed
      * @return lamps that produce the cheapest combination
      */
-    public Lamp[] getCheapestCombination(Lamp[] lamps, int quantity) throws SQLException {
+    public Lamp[] getCheapestCombination(Lamp[] lamps, int quantity) throws SQLException, OrderFormException {
         if (lamps.length < quantity) {
             return new Lamp[0];
         }
@@ -356,6 +366,8 @@ public class Inventory {
             deleteFurniture(lamp.getId(), "LAMP");
         }
 
+        createFurnitureOrder(cheapest, quantity, "Lamp");
+
         return cheapest;
     }
 
@@ -366,7 +378,7 @@ public class Inventory {
      * @param quantity number of filings needed
      * @return filings that produce the cheapest combination
      */
-    public Filing[] getCheapestCombination(Filing[] filings, int quantity) throws SQLException {
+    public Filing[] getCheapestCombination(Filing[] filings, int quantity) throws SQLException, OrderFormException {
         if (filings.length < quantity) {
             return new Filing[0];
         }
@@ -386,7 +398,14 @@ public class Inventory {
             deleteFurniture(filing.getId(), "FILING");
         }
 
+        createFurnitureOrder(cheapest, quantity, "Filing");
+
         return cheapest;
+    }
+
+    private void createFurnitureOrder(Furniture[] furnitures, int quantity, String category) throws OrderFormException {
+        OrderForm order = new OrderForm(furnitures, category, quantity);
+        order.createOrderForm();
     }
 
     /**

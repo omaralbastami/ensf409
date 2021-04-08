@@ -67,6 +67,8 @@ public class ConsoleApp {
             System.err.println("Please enter a valid number");
         } catch (SQLException e) {
             System.err.println("An error occurred while reading furniture information from database");
+        } catch (OrderFormException e) {
+            System.err.println("An error occurred while saving your order into a text file");
         } catch (Exception e) {
             System.err.println("Something went wrong, please try again ...");
         } finally {
@@ -107,7 +109,7 @@ public class ConsoleApp {
      * @param quantity number of items
      * @return array of cheapest furnitures
      */
-    private Furniture[] getRequestedFurniture(String category, String type, int quantity) throws SQLException {
+    private Furniture[] getRequestedFurniture(String category, String type, int quantity) throws SQLException, OrderFormException {
         switch (category) {
         case "CHAIR":
             Chair[] chairs = inventory.getChairs(type);
